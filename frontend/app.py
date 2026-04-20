@@ -433,7 +433,7 @@ st.markdown(
         <h1>Multi-Agent Research Team</h1>
     </div>
     <p class="app-subtitle">
-        Supervisor → Researcher → Writer → Fact-Checker &nbsp;·&nbsp; Claude 3.5 Sonnet &nbsp;·&nbsp; LangGraph
+        Orchestrated AI Agents — Real-Time Intelligence · Groq Engine · LangGraph Workflow
     </p>
     """,
     unsafe_allow_html=True,

@@ -416,7 +416,7 @@ with st.sidebar:
     st.markdown('<div class="sidebar-section-label">Backend</div>', unsafe_allow_html=True)
     backend_url = st.text_input(
         "URL",
-        value="http://localhost:8000",
+        value="https://multi-agent-research-team.onrender.com",
         label_visibility="collapsed",
     )
 

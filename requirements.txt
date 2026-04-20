@@ -1,0 +1,14 @@
+langchain>=0.3
+langgraph>=0.2
+langchain-anthropic>=0.3
+langchain-community>=0.3
+tavily-python>=0.5
+fastapi>=0.115
+uvicorn[standard]>=0.34
+pydantic-settings>=2.0
+redis>=5.0
+streamlit>=1.40
+sseclient-py>=1.8
+fpdf2>=2.8
+python-dotenv>=1.0
+sse-starlette>=2.0

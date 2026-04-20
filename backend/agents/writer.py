@@ -105,16 +105,13 @@ def writer_node(state: AgentState, llm) -> dict:
     revision_count = state.get("revision_count", 0)
     is_revision = revision_count > 0
 
-    # 🔥 SMART TOKEN CONTROL
-    def smart_trim(text, limit):
-        if not text:
-            return ""
-        return text[:limit]
+    # 🔥 STRONG TOKEN CONTROL
+    def trim(text, limit):
+        return text[:limit] if text else ""
 
-    # safe limits (tested for Groq free tier)
-    research = smart_trim(state.get("research_data"), 1800)
-    draft = smart_trim(state.get("draft"), 1000)
-    feedback = smart_trim(state.get("fact_check_result"), 600)
+    research = trim(state.get("research_data"), 1400)
+    draft = trim(state.get("draft"), 800)
+    feedback = trim(state.get("fact_check_result"), 500)
 
     context_parts = [
         f"Original query: {state['query']}",

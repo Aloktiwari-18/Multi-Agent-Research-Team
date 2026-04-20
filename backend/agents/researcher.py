@@ -85,7 +85,7 @@ Produce a **high-quality research brief with strong factual grounding**
 so that the Writer Agent can generate an **accurate and insightful report**.
 """
 
-MAX_SEARCH_RESULTS = 3
+MAX_SEARCH_RESULTS = MAX_SEARCH_RESULTS = 5 if is_local else 3
 
 
 def _build_researcher_chain(llm: ChatGroq, tavily_api_key: str):
@@ -122,7 +122,7 @@ def researcher_node(state: AgentState, llm: ChatGroq, tavily_api_key: str) -> di
             query = tool_call["args"].get("query", state["query"])
             results = search_tool.invoke({"query": query})
             formatted = "\n".join(
-                f"- [{r.get('title', 'Source')}]({r.get('url', '')}): {r.get('content', '')[:300]}"
+                f"- [{r.get('title', 'Source')}]({r.get('url', '')}): {r.get('content', '')[:250]}"
                 for r in results
                 if isinstance(r, dict)
             )

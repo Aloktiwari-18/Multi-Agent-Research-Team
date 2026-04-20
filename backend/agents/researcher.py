@@ -85,7 +85,7 @@ def researcher_node(state: AgentState, llm: ChatGroq, tavily_api_key: str) -> di
             query = tool_call["args"].get("query", state["query"])
             results = search_tool.invoke({"query": query})
             formatted = "\n".join(
-                f"- [{r.get('title', 'Source')}]({r.get('url', '')}): {r.get('content', '')[:250]}"
+                f"- [{r.get('title', 'Source')}]({r.get('url', '')}): {r.get('content', '')[:220]}"
                 for r in results
                 if isinstance(r, dict)
             )

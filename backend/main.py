@@ -36,7 +36,7 @@ app.add_middleware(
 
 class ResearchRequest(BaseModel):
     query: str
-    anthropic_api_key: str | None = None
+    groq_api_key: str | None = None
     tavily_api_key: str | None = None
     langchain_api_key: str | None = None
     llm_model: str | None = None
@@ -53,8 +53,8 @@ def _sse_event(event: str, data: dict) -> str:
 async def _run_graph_sse(request: ResearchRequest) -> AsyncGenerator[str, None]:
     """Execute the graph and yield SSE events for each agent step."""
     overrides = {}
-    if request.anthropic_api_key:
-        overrides["anthropic_api_key"] = request.anthropic_api_key
+    if request.groq_api_key:
+        overrides["groq_api_key"] = request.groq_api_key
     if request.tavily_api_key:
         overrides["tavily_api_key"] = request.tavily_api_key
     if request.langchain_api_key:
@@ -114,7 +114,7 @@ async def health():
 async def research(request: ResearchRequest):
     """Run the multi-agent research pipeline, streaming results as SSE.
     Falls back to demo mode if demo_mode is set or no API keys are provided."""
-    use_demo = request.demo_mode or (not request.anthropic_api_key and not request.tavily_api_key)
+    use_demo = request.demo_mode or (not request.groq_api_key and not request.tavily_api_key)
     stream = demo_sse_stream(request.query) if use_demo else _run_graph_sse(request)
     return StreamingResponse(
         stream,

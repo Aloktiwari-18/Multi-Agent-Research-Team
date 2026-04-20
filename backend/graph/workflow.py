@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from functools import partial
 
-from langchain_anthropic import ChatAnthropic
+from langchain_groq import ChatGroq
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, StateGraph
 
@@ -44,9 +44,9 @@ def build_graph(settings: Settings | None = None):
         from backend.config import get_settings
         settings = get_settings()
 
-    llm = ChatAnthropic(
+    llm = ChatGroq(
         model=settings.llm_model,
-        anthropic_api_key=settings.anthropic_api_key,
+        groq_api_key=settings.groq_api_key,
         temperature=0.3,
         max_tokens=4096,
     )

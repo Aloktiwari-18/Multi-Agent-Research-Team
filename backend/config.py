@@ -15,7 +15,7 @@ class Settings:
     """Immutable settings pulled from env vars with sensible defaults."""
 
     # ── Required ──────────────────────────────────────────────
-    anthropic_api_key: str = field(default_factory=lambda: os.getenv("ANTHROPIC_API_KEY", ""))
+    groq_api_key: str = field(default_factory=lambda: os.getenv("GROQ_API_KEY", ""))
     tavily_api_key: str = field(default_factory=lambda: os.getenv("TAVILY_API_KEY", ""))
 
     # ── Optional ──────────────────────────────────────────────
@@ -24,7 +24,7 @@ class Settings:
     langchain_project: str = field(default_factory=lambda: os.getenv("LANGCHAIN_PROJECT", "multi-agent-research"))
 
     redis_url: str = field(default_factory=lambda: os.getenv("REDIS_URL", ""))
-    llm_model: str = field(default_factory=lambda: os.getenv("LLM_MODEL", "claude-3-5-sonnet-latest"))
+    llm_model: str = field(default_factory=lambda: os.getenv("LLM_MODEL", "llama-3.3-70b-versatile"))
 
     # ── Constraints ───────────────────────────────────────────
     max_revisions: int = 3
@@ -42,7 +42,7 @@ def get_settings(**overrides: str) -> Settings:
     Streamlit sidebar)."""
     env_defaults = Settings()
     merged = {
-        "anthropic_api_key": overrides.get("anthropic_api_key") or env_defaults.anthropic_api_key,
+        "groq_api_key": overrides.get("groq_api_key") or env_defaults.groq_api_key,
         "tavily_api_key": overrides.get("tavily_api_key") or env_defaults.tavily_api_key,
         "langchain_api_key": overrides.get("langchain_api_key") or env_defaults.langchain_api_key,
         "redis_url": overrides.get("redis_url") or env_defaults.redis_url,

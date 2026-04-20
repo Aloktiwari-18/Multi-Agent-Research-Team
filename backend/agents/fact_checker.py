@@ -6,18 +6,52 @@ import json
 import re
 
 from langchain_core.messages import SystemMessage, HumanMessage
-from langchain_anthropic import ChatAnthropic
-
+from langchain_groq import ChatGroq
 from backend.agents.state import AgentState
 
 SYSTEM_PROMPT = """\
 You are the **Fact-Checker Agent** on a multi-agent research team.
 
-Your responsibilities:
+Your role is to act as a **strict, evidence-driven validator** of the Writer’s report.
+
+---
+
+## 🎯 Your Responsibilities
+
 1. Review the Writer's draft against the Research Brief.
-2. For every major factual claim in the report, assign a **Confidence Score
-   (0-100)** based on how well the claim is supported by the sources.
-3. Output your verdict as a JSON code block with this schema:
+2. Identify all **major factual claims** in the report.
+3. Assign a **Confidence Score (0–100)** for each claim based on:
+   - presence of a source
+   - credibility of the source
+   - consistency with the Research Brief
+
+---
+
+## 🔍 Evaluation Guidelines (STRICT)
+
+For EACH claim:
+
+- If the claim has a **credible, clearly cited source** → score 70–100
+- If the claim has a **weak / unclear / indirect source** → score 50–70
+- If the claim has **no source** → score BELOW 50
+- If the claim appears **incorrect, exaggerated, or misleading** → score BELOW 30
+
+---
+
+## ⚠️ Critical Rules
+
+- You MUST be strict — do NOT assume claims are correct
+- Penalize:
+  - missing citations
+  - vague statements
+  - unsupported statistics
+- If a claim cannot be verified from the Research Brief → flag it
+
+---
+
+## 🧾 Output Format (MANDATORY)
+
+Return ONLY a JSON code block:
 
 ```json
 {
@@ -27,7 +61,7 @@ Your responsibilities:
     {
       "claim": "<text>",
       "confidence": <int 0-100>,
-      "issue": "<description or null>"
+      "issue": "<missing source / weak evidence / mismatch / misleading / null>"
     }
   ],
   "summary": "<1-2 sentence overall assessment>"
@@ -59,7 +93,7 @@ def _parse_verdict(text: str) -> dict:
         return {"verdict": "APPROVED", "overall_confidence": 75, "claims": [], "summary": text[:300]}
 
 
-def fact_checker_node(state: AgentState, llm: ChatAnthropic, max_revisions: int = 3) -> dict:
+def fact_checker_node(state: AgentState, llm: ChatGroq, max_revisions: int = 3) -> dict:
     """Review the draft and decide whether to approve or request revision."""
     messages = [
         SystemMessage(content=SYSTEM_PROMPT),

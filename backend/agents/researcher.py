@@ -84,8 +84,10 @@ Example:
 Produce a **high-quality research brief with strong factual grounding**
 so that the Writer Agent can generate an **accurate and insightful report**.
 """
+import os
 
-MAX_SEARCH_RESULTS = MAX_SEARCH_RESULTS = 5 if is_local else 3
+is_local = os.getenv("ENV") == "local"
+MAX_SEARCH_RESULTS = 5 if is_local else 3
 
 
 def _build_researcher_chain(llm: ChatGroq, tavily_api_key: str):

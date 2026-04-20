@@ -66,7 +66,7 @@ Run the project instantly without API keys.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/manpatell/Multi-Agent-Research-Team.git
+git clone https://github.com/aloktiwari18/Multi-Agent-Research-Team.git
 cd Multi-Agent-Research-Team
 ```
 

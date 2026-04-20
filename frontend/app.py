@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-from fpdf import FPDF
 import requests
 import streamlit as st
 from fpdf import FPDF

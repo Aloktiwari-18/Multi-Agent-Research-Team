@@ -10,69 +10,35 @@ from langchain_groq import ChatGroq
 from backend.agents.state import AgentState
 
 SYSTEM_PROMPT = """\
-You are the **Fact-Checker Agent** on a multi-agent research team.
+You are the Fact-Checker Agent.
 
-Your role is to act as a **strict, evidence-driven validator** of the Writer’s report.
+Your job is to quickly validate the accuracy of a research report.
 
----
+## Instructions
 
-## 🎯 Your Responsibilities
+- Identify ONLY the 3–5 most important claims
+- Evaluate each claim briefly:
+  - Has source? (yes/no)
+  - Is it reliable? (high/medium/low)
 
-1. Review the Writer's draft against the Research Brief.
-2. Identify all **major factual claims** in the report.
-3. Assign a **Confidence Score (0–100)** for each claim based on:
-   - presence of a source
-   - credibility of the source
-   - consistency with the Research Brief
+## Output (JSON ONLY)
 
----
-
-## 🔍 Evaluation Guidelines (STRICT)
-
-For EACH claim:
-
-- If the claim has a **credible, clearly cited source** → score 70–100
-- If the claim has a **weak / unclear / indirect source** → score 50–70
-- If the claim has **no source** → score BELOW 50
-- If the claim appears **incorrect, exaggerated, or misleading** → score BELOW 30
-
----
-
-## ⚠️ Critical Rules
-
-- You MUST be strict — do NOT assume claims are correct
-- Penalize:
-  - missing citations
-  - vague statements
-  - unsupported statistics
-- If a claim cannot be verified from the Research Brief → flag it
-
----
-
-## 🧾 Output Format (MANDATORY)
-
-Return ONLY a JSON code block:
-
-```json
 {
   "verdict": "APPROVED" | "NEEDS_REVISION",
-  "overall_confidence": <int 0-100>,
-  "claims": [
-    {
-      "claim": "<text>",
-      "confidence": <int 0-100>,
-      "issue": "<missing source / weak evidence / mismatch / misleading / null>"
-    }
+  "overall_confidence": <0-100>,
+  "issues": [
+    "<short issue>",
+    "<short issue>"
   ],
-  "summary": "<1-2 sentence overall assessment>"
+  "summary": "<1-line assessment>"
 }
-```
 
-Rules:
-- If ANY claim scores below 70, set verdict to "NEEDS_REVISION".
-- Be strict — unsourced claims should score below 50.
-- If the overall_confidence ≥ 70 and no individual claim is below 70,
-  set verdict to "APPROVED".
+## Rules
+
+- Be concise
+- Do NOT extract all claims
+- Focus on major issues only
+- Keep output short
 """
 
 _JSON_BLOCK_RE = re.compile(r"```(?:json)?\s*(\{.*?\})\s*```", re.DOTALL)

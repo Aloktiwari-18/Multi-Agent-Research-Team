@@ -51,7 +51,7 @@ def writer_node(state: AgentState, llm) -> dict:
     is_revision = revision_count > 0
 
     # 🔥 HARD BUDGET (safe for 6k TPM)
-    research = _trim(state.get("research_data"), 1100)
+    research = _trim(state.get("research_data"), 1000)
     draft    = _trim(state.get("draft"), 600)
     feedback = _trim(state.get("fact_check_result"), 350)
 

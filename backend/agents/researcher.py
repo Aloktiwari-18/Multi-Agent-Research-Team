@@ -85,7 +85,7 @@ Produce a **high-quality research brief with strong factual grounding**
 so that the Writer Agent can generate an **accurate and insightful report**.
 """
 
-MAX_SEARCH_RESULTS = 4
+MAX_SEARCH_RESULTS = 3
 
 
 def _build_researcher_chain(llm: ChatGroq, tavily_api_key: str):

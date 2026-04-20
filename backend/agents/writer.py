@@ -105,26 +105,26 @@ def writer_node(state: AgentState, llm) -> dict:
     revision_count = state.get("revision_count", 0)
     is_revision = revision_count > 0
 
-    # 🔥 STRONG TOKEN CONTROL
+    # 🔥 STRICT LIMIT (FINAL SAFE)
     def trim(text, limit):
         return text[:limit] if text else ""
 
-    research = trim(state.get("research_data"), 1400)
-    draft = trim(state.get("draft"), 800)
-    feedback = trim(state.get("fact_check_result"), 500)
+    research = trim(state.get("research_data"), 1200)
+    draft = trim(state.get("draft"), 700)
+    feedback = trim(state.get("fact_check_result"), 400)
 
     context_parts = [
-        f"Original query: {state['query']}",
-        f"Research Brief:\n{research}",
+        f"Query: {state['query']}",
+        f"Research:\n{research}",
     ]
 
     if is_revision:
-        context_parts.append(f"Previous draft:\n{draft}")
-        context_parts.append(f"Fact-Checker feedback:\n{feedback}")
+        context_parts.append(f"Draft:\n{draft}")
+        context_parts.append(f"Feedback:\n{feedback}")
 
     messages = [
         SystemMessage(content=SYSTEM_PROMPT),
-        HumanMessage(content="\n\n---\n\n".join(context_parts)),
+        HumanMessage(content="\n\n".join(context_parts)),
     ]
 
     response = llm.invoke(messages)

@@ -101,38 +101,36 @@ Your goal is to produce a **high-quality, insight-rich report that demonstrates 
 """
 
 
+def _trim(text: str, limit: int) -> str:
+    return (text or "")[:limit]
+
 def writer_node(state: AgentState, llm) -> dict:
     revision_count = state.get("revision_count", 0)
     is_revision = revision_count > 0
 
-    # 🔥 STRICT LIMIT (FINAL SAFE)
-    def trim(text, limit):
-        return text[:limit] if text else ""
-
-    research = trim(state.get("research_data"), 1200)
-    draft = trim(state.get("draft"), 700)
-    feedback = trim(state.get("fact_check_result"), 400)
+    # 🔥 HARD BUDGET (safe for 6k TPM)
+    research = _trim(state.get("research_data"), 1100)
+    draft    = _trim(state.get("draft"), 600)
+    feedback = _trim(state.get("fact_check_result"), 350)
 
     context_parts = [
-        f"Query: {state['query']}",
-        f"Research:\n{research}",
+        f"Query:\n{_trim(state['query'], 300)}",
+        f"Research Brief:\n{research}",
     ]
 
     if is_revision:
-        context_parts.append(f"Draft:\n{draft}")
-        context_parts.append(f"Feedback:\n{feedback}")
+        context_parts.append(f"Previous Draft:\n{draft}")
+        context_parts.append(f"Fact Feedback:\n{feedback}")
 
     messages = [
         SystemMessage(content=SYSTEM_PROMPT),
         HumanMessage(content="\n\n".join(context_parts)),
     ]
 
-    response = llm.invoke(messages)
+    resp = llm.invoke(messages)
 
     return {
-        "draft": response.content,
-        "agent_logs": [
-            f"✍️ Writer — {'Revised' if is_revision else 'Drafted'} report"
-        ],
-        "messages": [response],
+        "draft": resp.content,
+        "agent_logs": [f"✍️ Writer — {'Revised' if is_revision else 'Drafted'}"],
+        "messages": [resp],
     }

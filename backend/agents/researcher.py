@@ -87,7 +87,7 @@ so that the Writer Agent can generate an **accurate and insightful report**.
 import os
 
 is_local = os.getenv("ENV") == "local"
-MAX_SEARCH_RESULTS = 5 if is_local else 3
+MAX_SEARCH_RESULTS = 5 if is_local else 2
 
 
 def _build_researcher_chain(llm: ChatGroq, tavily_api_key: str):
@@ -124,7 +124,7 @@ def researcher_node(state: AgentState, llm: ChatGroq, tavily_api_key: str) -> di
             query = tool_call["args"].get("query", state["query"])
             results = search_tool.invoke({"query": query})
             formatted = "\n".join(
-                f"- [{r.get('title', 'Source')}]({r.get('url', '')}): {r.get('content', '')[:250]}"
+                f"- [{r.get('title', 'Source')}]({r.get('url', '')}): {r.get('content', '')[:220]}"
                 for r in results
                 if isinstance(r, dict)
             )

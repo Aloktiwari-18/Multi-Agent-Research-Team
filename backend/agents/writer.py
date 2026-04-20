@@ -101,21 +101,20 @@ Your goal is to produce a **high-quality, insight-rich report that demonstrates 
 """
 
 
-def writer_node(state: AgentState, llm: ChatGroq) -> dict:
-    """Draft (or revise) the research report."""
+def writer_node(state: AgentState, llm) -> dict:
     revision_count = state.get("revision_count", 0)
     is_revision = revision_count > 0
 
-    # 🔥 SMART TOKEN CONTROL (AUTO SAFE)
-    def smart_trim(text, max_chars):
+    # 🔥 SMART TOKEN CONTROL
+    def smart_trim(text, limit):
         if not text:
             return ""
-        return text[:max_chars]
+        return text[:limit]
 
-    # 👉 total safe budget ~4500 chars (safe for 6k token limit)
-    research = smart_trim(state.get("research_data"), 2000)
-    draft = smart_trim(state.get("draft"), 1200)
-    feedback = smart_trim(state.get("fact_check_result"), 800)
+    # safe limits (tested for Groq free tier)
+    research = smart_trim(state.get("research_data"), 1800)
+    draft = smart_trim(state.get("draft"), 1000)
+    feedback = smart_trim(state.get("fact_check_result"), 600)
 
     context_parts = [
         f"Original query: {state['query']}",
@@ -133,12 +132,10 @@ def writer_node(state: AgentState, llm: ChatGroq) -> dict:
 
     response = llm.invoke(messages)
 
-    action = "Revised" if is_revision else "Drafted"
-
     return {
         "draft": response.content,
         "agent_logs": [
-            f"✍️ **Writer** — {action} the report (revision #{revision_count})."
+            f"✍️ Writer — {'Revised' if is_revision else 'Drafted'} report"
         ],
         "messages": [response],
     }
